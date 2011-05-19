@@ -10,9 +10,10 @@
 # - warn about long compile times and high memory requirements
 # - XXX's below
 # - support multiple targets (stackless, sandbox)
-# - support concurrent targets (include OBJSPACE_ARGS)
 # - fix different archs (lib_pypy/*cache*)
 # - fix jit on non x86 archs
+# - add test target
+# - support -O1 (gc)
 
 PORTNAME=	pypy
 DISTVERSION=	1.5
@@ -41,28 +42,41 @@ PLIST_SUB+=	PYPYPREFIX="${PYPYPREFIX:S|^${PREFIX}/||g}" \
 		DISTVERSION="${DISTVERSION}"
 # See http://readthedocs.org/docs/pypy/latest/config/index.html for a list of
 # options available.  --gcrootfinder=asmgcc does not work under FreeBSD/amd64.
-TRANSLATE_ARGS+=	--gcrootfinder=shadowstack
+TRANSLATE_ARGS+=	--gcrootfinder=shadowstack -Ojit
 
 .include <bsd.port.pre.mk>
 
+# Use pypy if it is installed, else use python (to translate)
 PYPY?=		${LOCALBASE}/bin/pypy
-.if exists(${PYPY}) # Use pypy if it is installed, else use python
+.if exists(${PYPY})
 PY=		${PYPY}
 .else
 USE_PYTHON_BUILD=	2.5+
 PY=		${PYTHON_CMD}
 .endif
 
-.if exists(${PREFIX}/bin/pypy)
-PLIST_SUB+=	PYPY="@comment "
+# Translate FreeBSD ARCH types to PyPy ARCH types
+# Pypy officially only supports i386 and amd64, the other platforms are
+# untested (and do not have jit support).
+.if ${ARCH} == "i386"
+PYPY_ARCH=	"x86_32"
+PYPY_JITTABLE=	YES
+.elif ${ARCH} == "amd64"
+PYPY_ARCH=	"x86_64"
+PYPY_JITTABLE=	YES
+.elif ${ARCH} == "powerpc"
+PYPY_ARCH=	"ppc_32"
+.elif ${ARCH} == "powerpc64"
+PYPY_ARCH=	"ppc_64"
 .else
-PLIST_SUB+=	PYPY=""
+PYPY_ARCH=	${ARCH}
 .endif
+PLIST_SUB+=	PYPY_ARCH="${PYPY_ARCH}"
 
 do-build:
 	${RM} -rf ${WRKDIR}/pypy-c
 	${MKDIR} ${WRKDIR}/pypy-c
-	(cd ${WRKSRC}/pypy/translator/goal; ${SETENV} ${MAKE_ENV} TMPDIR=${WRKDIR}/pypy-c ${PY} translate.py ${TRANSLATE_ARGS} -Ojit)
+	(cd ${WRKSRC}/pypy/translator/goal; ${SETENV} ${MAKE_ENV} TMPDIR=${WRKDIR}/pypy-c ${PY} translate.py ${TRANSLATE_ARGS})
 
 do-install:
 	${MKDIR} ${PYPYPREFIX} ${PYPYPREFIX}/bin
@@ -74,9 +88,7 @@ do-install:
 .endfor
 	${INSTALL_PROGRAM} ${WRKDIR}/pypy-c/usession-unknown-0/testing_1/pypy-c ${PYPYPREFIX}/bin/pypy
 	${LN} -fs ${PYPYPREFIX}/bin/pypy ${PREFIX}/bin/pypy${DISTVERSION}
-.if !exists(${PREFIX}/bin/pypy)
-	-${LN} -s ${PYPYPREFIX}/bin/pypy ${PREFIX}/bin/pypy
-.endif
+	${LN} -s ${PYPYPREFIX}/bin/pypy ${PREFIX}/bin/pypy
 	${PYPYPREFIX}/bin/pypy -m compileall
 
 .include <bsd.port.post.mk>

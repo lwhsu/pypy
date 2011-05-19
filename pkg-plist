@@ -1,4 +1,4 @@
-%%PYPY%%bin/pypy
+bin/pypy
 bin/pypy%%DISTVERSION%%
 %%PYPYPREFIX%%/LICENSE
 %%PYPYPREFIX%%/README
@@ -2796,11 +2796,11 @@ bin/pypy%%DISTVERSION%%
 %%PYPYPREFIX%%/lib_pypy/ctypes_config_cache/__init__.py
 %%PYPYPREFIX%%/lib_pypy/ctypes_config_cache/__init__.pyc
 %%PYPYPREFIX%%/lib_pypy/ctypes_config_cache/_locale_cache.py
-%%PYPYPREFIX%%/lib_pypy/ctypes_config_cache/_locale_x86_64_.py
+%%PYPYPREFIX%%/lib_pypy/ctypes_config_cache/_locale_%%PYPY_ARCH%%_.py
 %%PYPYPREFIX%%/lib_pypy/ctypes_config_cache/_resource_cache.py
-%%PYPYPREFIX%%/lib_pypy/ctypes_config_cache/_resource_x86_64_.py
+%%PYPYPREFIX%%/lib_pypy/ctypes_config_cache/_resource_%%PYPY_ARCH%%_.py
 %%PYPYPREFIX%%/lib_pypy/ctypes_config_cache/_syslog_cache.py
-%%PYPYPREFIX%%/lib_pypy/ctypes_config_cache/_syslog_x86_64_.py
+%%PYPYPREFIX%%/lib_pypy/ctypes_config_cache/_syslog_%%PYPY_ARCH%%_.py
 %%PYPYPREFIX%%/lib_pypy/ctypes_config_cache/autopath.py
 %%PYPYPREFIX%%/lib_pypy/ctypes_config_cache/dumpcache.py
 %%PYPYPREFIX%%/lib_pypy/ctypes_config_cache/dumpcache.pyc
