@@ -6,14 +6,13 @@
 #
 
 # TODO:
-# - use clang when possible (uses less memory on compile)
-# - warn about long compile times and high memory requirements
+# - check for sufficient memory
 # - XXX's below
-# - support multiple targets (stackless, sandbox)
-# - fix different archs (lib_pypy/*cache*)
-# - fix jit on non x86 archs
+# + support multiple targets (stackless, sandbox)
 # - add test target
 # - support -O1 (gc)
+# - support CLI backend
+# - support valgrind
 
 PORTNAME=	pypy
 DISTVERSION=	1.5
@@ -27,33 +26,51 @@ COMMENT=	PyPy is a fast, compliant implementation of the Python language
 LIB_DEPENDS=	expat:${PORTSDIR}/textproc/expat2 \
 		ffi:${PORTSDIR}/devel/libffi
 
+BUILD_WRKSRC=	${WRKDIR}
 # XXX: fixup licenses (LGPL21, others)
 LICENSE=	MIT PSFL
 LICENSE_COMB=	multi
-# XXX: not unsafe, just uses only one job
-MAKE_JOBS_UNSAFE=	yes
 USE_BZIP2=	yes
 USE_ICONV=	yes
 USE_GETTEXT=	yes
+PKGINSTALL=	${WRKDIR}/pkg-install
+PKGDEINSTALL=	${WRKDIR}/pkg-deinstall
 
 PYPYDIRS=	include lib-python lib_pypy site-packages
 PYPYPREFIX?=	${PREFIX}/${PORTNAME}-${DISTVERSION}
 PLIST_SUB+=	PYPYPREFIX="${PYPYPREFIX:S|^${PREFIX}/||g}" \
 		DISTVERSION="${DISTVERSION}"
-# See http://readthedocs.org/docs/pypy/latest/config/index.html for a list of
-# options available.  --gcrootfinder=asmgcc does not work under FreeBSD/amd64.
-TRANSLATE_ARGS+=	--gcrootfinder=shadowstack -Ojit
+
+# List of PyPy instances
+PYPY_INST?=	DEFAULT
+
+.if defined(WITH_STACKLESS)
+PYPY_INST+=	STACKLESS
+.endif
+
+.if defined(WITH_SANDBOX)
+PYPY_INST+=	SANDBOX
+.endif
+
+# Use pypy if it is installed, else use python (to translate)
+.if !defined(PYPY)
+PYPY!=		which pypy 2> /dev/null || true
+.endif
+.if exists(${PYPY})
+PY?=		${PYPY}
+.else
+USE_PYTHON_BUILD=	2.5+
+PY?=		${PYTHON_CMD}
+.endif
 
 .include <bsd.port.pre.mk>
 
-# Use pypy if it is installed, else use python (to translate)
-PYPY?=		${LOCALBASE}/bin/pypy
-.if exists(${PYPY})
-PY=		${PYPY}
-.else
-USE_PYTHON_BUILD=	2.5+
-PY=		${PYTHON_CMD}
-.endif
+PYPY_NAMES=
+.for inst in ${PYPY_INST}
+PYPY_NAMES+=	${PYPY_${inst}_NAME}
+.endfor
+
+.include <${.CURDIR}/files/bsd.pypy.inst.mk>
 
 # Translate FreeBSD ARCH types to PyPy ARCH types
 # Pypy officially only supports i386 and amd64, the other platforms are
@@ -73,10 +90,72 @@ PYPY_ARCH=	${ARCH}
 .endif
 PLIST_SUB+=	PYPY_ARCH="${PYPY_ARCH}"
 
-do-build:
-	${RM} -rf ${WRKDIR}/pypy-c
-	${MKDIR} ${WRKDIR}/pypy-c
-	(cd ${WRKSRC}/pypy/translator/goal; ${SETENV} ${MAKE_ENV} TMPDIR=${WRKDIR}/pypy-c ${PY} translate.py ${TRANSLATE_ARGS})
+.if !defined(PYPY_JITTABLE)
+.for inst in ${PYPY_INST}
+.if ${PYPY_${inst}_OPT} == jit
+PYPY_${inst}_OPT=	2
+.endif
+.endfor
+.endif
+
+pre-fetch:
+	@${ECHO} "PyPy requires a large amount of free RAM and time to translate and compile."
+	@${ECHO}
+	@${ECHO} "To translate, PyPy requires on i386 3G (min 2G) free RAM and on amd64"
+	@${ECHO} "6G (min 4G) free RAM.  Also, to compile, PyPy on amd64 gcc requires an"
+	@${ECHO} "extra 4G however clang only requires 400M (CC=clang) but clang is slower"
+	@${ECHO} "in compiling PyPy."
+	@${ECHO}
+	@${ECHO} "If memory is in short supply consider using a lower optimisation level"
+	@${ECHO} "(e.g. PYPY_DEFAULT_OPT=2) however that makes PyPy much slower.  Also,"
+	@${ECHO} "consider forcing the build to use python (-DPYPY) however that makes the"
+	@${ECHO} "build much slower."
+	@${ECHO}
+	@${ECHO} "PyPy supports a large number of paramaters and customisations.  This port"
+	@${ECHO} "supports building multiple instances of PyPy, for example:"
+	@${ECHO} "PYPY_INST=	STACKLESS CUSTOM"
+	@${ECHO} "PYPY_CUSTOM_NAME=		pypy-custom"
+	@${ECHO} "PYPY_CUSTOM_TRANSLATE_ARGS=	--gcrootfinder=shadowstack --gc=generation"
+	@${ECHO} "PYPY_CUSTOM_OPT=		0"
+	@${ECHO} "PYPY_CUSTOM_OBJSPACE_ARGS=	--no-objspace-usepycfiles --objspace=thunk"
+	@${ECHO} "will produce two binaries named 'stackless' (STACKLESS instance) and"
+	@${ECHO} "'pypy-custom' (CUSTOM instance)."
+	@${ECHO} "See for a list of parameters:"
+	@${ECHO} "	http://readthedocs.org/docs/pypy/latest/config/index.html"
+	@${ECHO} "See for predefined instances:"
+	@${ECHO} "	${.CURDIR}/files/bsd.pypy.inst.mk"
+	@${ECHO}
+	@${ECHO} "On a fast machine PyPy takes around 45 minutes to translate and compile,"
+	@${ECHO} "however an average machine takes in excess of 4 hours, per instance."
+	@sleep 5
+
+do-configure:
+	${SED} -e 's|%%PREFIX%%|${PREFIX}|g' \
+		-e 's|%%PYPYPREFIX%%|${PYPYPREFIX}|g' \
+		-e 's|%%PYPY_NAMES%%|${PYPY_NAMES}|g' \
+		${FILESDIR}/use.pypy > ${WRKDIR}/use.pypy
+	${CP} ${WRKDIR}/use.pypy ${PKGINSTALL}
+	${CP} ${WRKDIR}/use.pypy ${PKGDEINSTALL}
+	${ECHO} "all: ${PYPY_NAMES}" > ${WRKDIR}/Makefile
+	${ECHO} >> ${WRKDIR}/Makefile
+.for inst in ${PYPY_INST}
+	${ECHO} "${PYPY_${inst}_NAME}: build_${PYPY_${inst}_NAME}/usession-unknown-0/testing_1/pypy-c" >> ${WRKDIR}/Makefile
+	${ECHO} "	${CP} build_${PYPY_${inst}_NAME}/usession-unknown-0/testing_1/pypy-c ${PYPY_${inst}_NAME}" >> ${WRKDIR}/Makefile
+	${ECHO} >> ${WRKDIR}/Makefile
+	${ECHO} ".done_translate_${PYPY_${inst}_NAME}:" >> ${WRKDIR}/Makefile
+	${ECHO} "	${RM} -rf build_${PYPY_${inst}_NAME}" >> ${WRKDIR}/Makefile
+	${ECHO} "	${MKDIR} build_${PYPY_${inst}_NAME}" >> ${WRKDIR}/Makefile
+	${ECHO} "	(cd ${DISTNAME}/pypy/translator/goal; \
+				${SETENV} TMPDIR=${WRKDIR}/build_${PYPY_${inst}_NAME} \
+				${PY} translate.py --source ${PYPY_${inst}_TRANSLATE_ARGS} -O${PYPY_${inst}_OPT} \
+					targetpypystandalone.py ${PYPY_${inst}_OBJSPACE_ARGS} )" >> ${WRKDIR}/Makefile
+	${ECHO} "	${TOUCH} .done_translate_${PYPY_${inst}_NAME}" >> ${WRKDIR}/Makefile
+	${ECHO} >> ${WRKDIR}/Makefile
+	${ECHO} "build_${PYPY_${inst}_NAME}/usession-unknown-0/testing_1/pypy-c: .done_translate_${PYPY_${inst}_NAME}" >> ${WRKDIR}/Makefile
+	${ECHO} "	${REINPLACE_CMD} -e 's|^%.o: %.c\$$\$$|.c.o:|g' build_${PYPY_${inst}_NAME}/usession-unknown-0/testing_1/Makefile" >> ${WRKDIR}/Makefile
+	${ECHO} "	${MAKE} -C build_${PYPY_${inst}_NAME}/usession-unknown-0/testing_1 pypy-c" >> ${WRKDIR}/Makefile
+	${ECHO} >> ${WRKDIR}/Makefile
+.endfor
 
 do-install:
 	${MKDIR} ${PYPYPREFIX} ${PYPYPREFIX}/bin
@@ -86,9 +165,19 @@ do-install:
 .for file in LICENSE README
 	${INSTALL_DATA} ${WRKSRC}/${file} ${PYPYPREFIX}/${file}
 .endfor
-	${INSTALL_PROGRAM} ${WRKDIR}/pypy-c/usession-unknown-0/testing_1/pypy-c ${PYPYPREFIX}/bin/pypy
-	${LN} -fs ${PYPYPREFIX}/bin/pypy ${PREFIX}/bin/pypy${DISTVERSION}
-	${LN} -s ${PYPYPREFIX}/bin/pypy ${PREFIX}/bin/pypy
+.for name in ${PYPY_NAMES:O}
+	${INSTALL_PROGRAM} ${WRKDIR}/${name} ${PYPYPREFIX}/bin/${name}
+	${LN} -fs ${PYPYPREFIX}/bin/${name} ${PREFIX}/bin/${name}${DISTVERSION}
+	${ECHO} bin/${name}${DISTVERSION} >> ${TMPPLIST}.prefix
+.endfor
+.for name in ${PYPY_NAMES:O}
+	${ECHO} ${PYPYPREFIX:S|${PREFIX}/||}/bin/${name} >> ${TMPPLIST}.prefix
+.endfor
+	${CAT} ${TMPPLIST} >> ${TMPPLIST}.prefix
+	${MV} ${TMPPLIST}.prefix ${TMPPLIST}
 	${PYPYPREFIX}/bin/pypy -m compileall
+
+post-install:
+	${SH} ${PKGINSTALL} ${PKGNAME} POST-INSTALL
 
 .include <bsd.port.post.mk>

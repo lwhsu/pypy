@@ -1,8 +1,5 @@
-bin/pypy
-bin/pypy%%DISTVERSION%%
 %%PYPYPREFIX%%/LICENSE
 %%PYPYPREFIX%%/README
-%%PYPYPREFIX%%/bin/pypy
 %%PYPYPREFIX%%/include/Python.h
 %%PYPYPREFIX%%/include/README
 %%PYPYPREFIX%%/include/abstract.h
