@@ -1,4 +1,4 @@
-# New ports collection makefile for:	pypy
+# New ports collection Makefile for:	pypy
 # Date created:				2011/05/17
 # Whom:					David Naylor <naylor.b.david@gmail.com>
 #
@@ -7,12 +7,11 @@
 
 # TODO:
 # - check for sufficient memory
-# - XXX's below
-# + support multiple targets (stackless, sandbox)
 # - add test target
 # - support -O1 (gc)
-# - support CLI backend
+# - support CLI backend (broken in 1.5)
 # - support valgrind
+# - use the first instance to compile object code
 
 PORTNAME=	pypy
 DISTVERSION=	1.5
@@ -27,7 +26,6 @@ LIB_DEPENDS=	expat:${PORTSDIR}/textproc/expat2 \
 		ffi:${PORTSDIR}/devel/libffi
 
 BUILD_WRKSRC=	${WRKDIR}
-# XXX: fixup licenses (LGPL21, others)
 LICENSE=	MIT PSFL
 LICENSE_COMB=	multi
 USE_BZIP2=	yes
@@ -127,7 +125,7 @@ pre-fetch:
 	@${ECHO}
 	@${ECHO} "On a fast machine PyPy takes around 45 minutes to translate and compile,"
 	@${ECHO} "however an average machine takes in excess of 4 hours, per instance."
-	@sleep 5
+	@sleep 1
 
 do-configure:
 	${SED} -e 's|%%PREFIX%%|${PREFIX}|g' \
@@ -179,5 +177,8 @@ do-install:
 
 post-install:
 	${SH} ${PKGINSTALL} ${PKGNAME} POST-INSTALL
+
+test: patch
+	(${CD} ${WRKSRC}/lib-python; python ../pypy/test_all.py)
 
 .include <bsd.port.post.mk>
