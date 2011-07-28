@@ -16,3 +16,9 @@ PYPY_SANDBOX_NAME?=		pypy-sandbox
 PYPY_SANDBOX_TRANSLATE_ARGS?=	--gcrootfinder=shadowstack --sandbox
 PYPY_SANDBOX_OPT?=		jit
 PYPY_SANDBOX_OBJSPACE_ARGS?=
+
+# Currently does not work
+PYPY_CLI_NAME?=			pypy-cli
+PYPY_CLI_TRANSLATE_ARGS?=	--backend=cli
+PYPY_CLI_OPT?=			2
+PYPY_CLI_OBJSPACE_ARGS?=
