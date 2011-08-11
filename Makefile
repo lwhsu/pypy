@@ -179,6 +179,9 @@ post-install:
 	${SH} ${PKGINSTALL} ${PKGNAME} POST-INSTALL
 
 test: patch
-	(${CD} ${WRKSRC}/lib-python; python ../pypy/test_all.py)
+.for inst in ${PYPY_INST}
+	@${WHICH} ${PYPY_${inst}_NAME} > /dev/null 2>&1 || (${ECHO} "Unable to find ${PYPY_${inst}_NAME}, please install port first!"; exit 1)
+	(${CD} ${WRKSRC}/lib-python; ${PYPY_${inst}_NAME} ../pypy/test_all.py)
+.endfor
 
 .include <bsd.port.post.mk>
