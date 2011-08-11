@@ -14,7 +14,7 @@
 # - use the first instance to compile object code
 
 PORTNAME=	pypy
-DISTVERSION=	1.5
+DISTVERSION=	1.6
 CATEGORIES=	lang python
 MASTER_SITES=	http://pypy.org/download/
 DISTNAME=	${PORTNAME}-${DISTVERSION}-src
