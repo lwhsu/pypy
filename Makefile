@@ -137,8 +137,8 @@ do-configure:
 	${ECHO} "all: ${PYPY_NAMES}" > ${WRKDIR}/Makefile
 	${ECHO} >> ${WRKDIR}/Makefile
 .for inst in ${PYPY_INST}
-	${ECHO} "${PYPY_${inst}_NAME}: build_${PYPY_${inst}_NAME}/usession-unknown-0/testing_1/pypy-c" >> ${WRKDIR}/Makefile
-	${ECHO} "	${CP} build_${PYPY_${inst}_NAME}/usession-unknown-0/testing_1/pypy-c ${PYPY_${inst}_NAME}" >> ${WRKDIR}/Makefile
+	${ECHO} "${PYPY_${inst}_NAME}: build_${PYPY_${inst}_NAME}/usession-default-0/testing_1/pypy-c" >> ${WRKDIR}/Makefile
+	${ECHO} "	${CP} build_${PYPY_${inst}_NAME}/usession-default-0/testing_1/pypy-c ${PYPY_${inst}_NAME}" >> ${WRKDIR}/Makefile
 	${ECHO} >> ${WRKDIR}/Makefile
 	${ECHO} ".done_translate_${PYPY_${inst}_NAME}:" >> ${WRKDIR}/Makefile
 	${ECHO} "	${RM} -rf build_${PYPY_${inst}_NAME}" >> ${WRKDIR}/Makefile
@@ -149,9 +149,9 @@ do-configure:
 					targetpypystandalone.py ${PYPY_${inst}_OBJSPACE_ARGS} )" >> ${WRKDIR}/Makefile
 	${ECHO} "	${TOUCH} .done_translate_${PYPY_${inst}_NAME}" >> ${WRKDIR}/Makefile
 	${ECHO} >> ${WRKDIR}/Makefile
-	${ECHO} "build_${PYPY_${inst}_NAME}/usession-unknown-0/testing_1/pypy-c: .done_translate_${PYPY_${inst}_NAME}" >> ${WRKDIR}/Makefile
-	${ECHO} "	${REINPLACE_CMD} -e 's|^%.o: %.c\$$\$$|.c.o:|g' build_${PYPY_${inst}_NAME}/usession-unknown-0/testing_1/Makefile" >> ${WRKDIR}/Makefile
-	${ECHO} "	${MAKE} -C build_${PYPY_${inst}_NAME}/usession-unknown-0/testing_1 pypy-c" >> ${WRKDIR}/Makefile
+	${ECHO} "build_${PYPY_${inst}_NAME}/usession-default-0/testing_1/pypy-c: .done_translate_${PYPY_${inst}_NAME}" >> ${WRKDIR}/Makefile
+	${ECHO} "	${REINPLACE_CMD} -e 's|^%.o: %.c\$$\$$|.c.o:|g' build_${PYPY_${inst}_NAME}/usession-default-0/testing_1/Makefile" >> ${WRKDIR}/Makefile
+	${ECHO} "	${MAKE} -C build_${PYPY_${inst}_NAME}/usession-default-0/testing_1 pypy-c" >> ${WRKDIR}/Makefile
 	${ECHO} >> ${WRKDIR}/Makefile
 .endfor
 
