@@ -158,7 +158,7 @@ do-configure:
 do-install:
 	${MKDIR} ${PYPYPREFIX} ${PYPYPREFIX}/bin
 .for dir in ${PYPYDIRS}
-	${CP} -r ${WRKSRC}/${dir} ${PYPYPREFIX}/
+	cd ${WRKSRC} && ${COPYTREE_SHARE} ${dir} ${PYPYPREFIX}
 .endfor
 .for file in LICENSE README
 	${INSTALL_DATA} ${WRKSRC}/${file} ${PYPYPREFIX}/${file}
