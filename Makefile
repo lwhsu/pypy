@@ -143,7 +143,7 @@ do-configure:
 	${ECHO} ".done_translate_${PYPY_${inst}_NAME}:" >> ${WRKDIR}/Makefile
 	${ECHO} "	${RM} -rf build_${PYPY_${inst}_NAME}" >> ${WRKDIR}/Makefile
 	${ECHO} "	${MKDIR} build_${PYPY_${inst}_NAME}" >> ${WRKDIR}/Makefile
-	${ECHO} "	(cd ${DISTNAME}/pypy/translator/goal; \
+	${ECHO} "	(cd ${WRKSRC}/pypy/translator/goal; \
 				${SETENV} TMPDIR=${WRKDIR}/build_${PYPY_${inst}_NAME} \
 				${PY} translate.py --source ${PYPY_${inst}_TRANSLATE_ARGS} -O${PYPY_${inst}_OPT} \
 					targetpypystandalone.py ${PYPY_${inst}_OBJSPACE_ARGS} )" >> ${WRKDIR}/Makefile
