@@ -173,7 +173,7 @@ do-install:
 .endfor
 	${CAT} ${TMPPLIST} >> ${TMPPLIST}.prefix
 	${MV} ${TMPPLIST}.prefix ${TMPPLIST}
-	${PYPYPREFIX}/bin/pypy -m compileall
+	${FIND} ${PYPYPREFIX} -type d | ${XARGS} ${PYPYPREFIX}/bin/pypy -m compileall -l
 
 post-install:
 	${SH} ${PKGINSTALL} ${PKGNAME} POST-INSTALL
