@@ -158,7 +158,7 @@ do-configure:
 do-install:
 	${MKDIR} ${PYPYPREFIX} ${PYPYPREFIX}/bin
 .for dir in ${PYPYDIRS}
-	${CP} -r ${WRKSRC}/${dir} ${PYPYPREFIX}/
+	cd ${WRKSRC} && ${COPYTREE_SHARE} ${dir} ${PYPYPREFIX}
 .endfor
 .for file in LICENSE README
 	${INSTALL_DATA} ${WRKSRC}/${file} ${PYPYPREFIX}/${file}
@@ -173,7 +173,7 @@ do-install:
 .endfor
 	${CAT} ${TMPPLIST} >> ${TMPPLIST}.prefix
 	${MV} ${TMPPLIST}.prefix ${TMPPLIST}
-	${PYPYPREFIX}/bin/pypy -m compileall
+	-${FIND} ${PYPYPREFIX} -type d | ${XARGS} ${PYPYPREFIX}/bin/pypy -m compileall -fl
 
 post-install:
 	${SH} ${PKGINSTALL} ${PKGNAME} POST-INSTALL
