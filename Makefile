@@ -12,12 +12,15 @@
 # - support CLI backend (broken in 1.5)
 # - support valgrind
 # - use the first instance to compile object code
+# - make jitviewer port (depends flask pygments simplejson Jinja2 Werkzeug)
 
 PORTNAME=	pypy
 DISTVERSION=	1.6
 CATEGORIES=	lang python
-MASTER_SITES=	http://pypy.org/download/
-DISTNAME=	${PORTNAME}-${DISTVERSION}-src
+MASTER_SITES=	https://bitbucket.org/pypy/pypy/get/
+DISTFILES=	release-${DISTVERSION}.tar.bz2
+DISTNAME=	pypy-pypy-release-${DISTVERSION}
+DIST_SUBDIR=	pypy
 
 MAINTAINER=	naylor.b.david@gmail.com
 COMMENT=	PyPy is a fast, compliant implementation of the Python language
