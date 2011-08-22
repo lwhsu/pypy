@@ -13,29 +13,31 @@
 # - support valgrind
 # - use the first instance to compile object code
 # - make jitviewer port (depends flask pygments simplejson Jinja2 Werkzeug)
+# - switch to slow (with low mem usage) flags if memory an issue
 
 PORTNAME=	pypy
 DISTVERSION=	1.6
 CATEGORIES=	lang python
 MASTER_SITES=	https://bitbucket.org/pypy/pypy/get/
-DISTFILES=	release-${DISTVERSION}.tar.bz2
-DISTNAME=	pypy-pypy-release-${DISTVERSION}
+DISTNAME=	release-${DISTVERSION}
 DIST_SUBDIR=	pypy
 
 MAINTAINER=	naylor.b.david@gmail.com
 COMMENT=	PyPy is a fast, compliant implementation of the Python language
 
+LICENSE=	MIT PSFL
+LICENSE_COMB=	multi
+
 LIB_DEPENDS=	expat:${PORTSDIR}/textproc/expat2 \
 		ffi:${PORTSDIR}/devel/libffi
 
 BUILD_WRKSRC=	${WRKDIR}
-LICENSE=	MIT PSFL
-LICENSE_COMB=	multi
 USE_BZIP2=	yes
 USE_ICONV=	yes
 USE_GETTEXT=	yes
 PKGINSTALL=	${WRKDIR}/pkg-install
 PKGDEINSTALL=	${WRKDIR}/pkg-deinstall
+WRKSRC=		${WRKDIR}/pypy-pypy-release-${DISTVERSION}
 
 PYPYDIRS=	include lib-python lib_pypy site-packages
 PYPYPREFIX?=	${PREFIX}/${PORTNAME}-${DISTVERSION}
@@ -140,8 +142,8 @@ do-configure:
 	${ECHO} "all: ${PYPY_NAMES}" > ${WRKDIR}/Makefile
 	${ECHO} >> ${WRKDIR}/Makefile
 .for inst in ${PYPY_INST}
-	${ECHO} "${PYPY_${inst}_NAME}: build_${PYPY_${inst}_NAME}/usession-default-0/testing_1/pypy-c" >> ${WRKDIR}/Makefile
-	${ECHO} "	${CP} build_${PYPY_${inst}_NAME}/usession-default-0/testing_1/pypy-c ${PYPY_${inst}_NAME}" >> ${WRKDIR}/Makefile
+	${ECHO} "${PYPY_${inst}_NAME}: build_${PYPY_${inst}_NAME}/usession-unknown-0/testing_1/pypy-c" >> ${WRKDIR}/Makefile
+	${ECHO} "	${CP} build_${PYPY_${inst}_NAME}/usession-unknown-0/testing_1/pypy-c ${PYPY_${inst}_NAME}" >> ${WRKDIR}/Makefile
 	${ECHO} >> ${WRKDIR}/Makefile
 	${ECHO} ".done_translate_${PYPY_${inst}_NAME}:" >> ${WRKDIR}/Makefile
 	${ECHO} "	${RM} -rf build_${PYPY_${inst}_NAME}" >> ${WRKDIR}/Makefile
@@ -152,9 +154,9 @@ do-configure:
 					targetpypystandalone.py ${PYPY_${inst}_OBJSPACE_ARGS} )" >> ${WRKDIR}/Makefile
 	${ECHO} "	${TOUCH} .done_translate_${PYPY_${inst}_NAME}" >> ${WRKDIR}/Makefile
 	${ECHO} >> ${WRKDIR}/Makefile
-	${ECHO} "build_${PYPY_${inst}_NAME}/usession-default-0/testing_1/pypy-c: .done_translate_${PYPY_${inst}_NAME}" >> ${WRKDIR}/Makefile
-	${ECHO} "	${REINPLACE_CMD} -e 's|^%.o: %.c\$$\$$|.c.o:|g' build_${PYPY_${inst}_NAME}/usession-default-0/testing_1/Makefile" >> ${WRKDIR}/Makefile
-	${ECHO} "	${MAKE} -C build_${PYPY_${inst}_NAME}/usession-default-0/testing_1 pypy-c" >> ${WRKDIR}/Makefile
+	${ECHO} "build_${PYPY_${inst}_NAME}/usession-unknown-0/testing_1/pypy-c: .done_translate_${PYPY_${inst}_NAME}" >> ${WRKDIR}/Makefile
+	${ECHO} "	${REINPLACE_CMD} -e 's|^%.o: %.c\$$\$$|.c.o:|g' build_${PYPY_${inst}_NAME}/usession-unknown-0/testing_1/Makefile" >> ${WRKDIR}/Makefile
+	${ECHO} "	${MAKE} -C build_${PYPY_${inst}_NAME}/usession-unknown-0/testing_1 pypy-c" >> ${WRKDIR}/Makefile
 	${ECHO} >> ${WRKDIR}/Makefile
 .endfor
 

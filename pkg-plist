@@ -4375,6 +4375,8 @@
 %%PYPYPREFIX%%/lib-python/modified-2.7/test/test_dumbdbm.pyc
 %%PYPYPREFIX%%/lib-python/modified-2.7/test/test_extcall.py
 %%PYPYPREFIX%%/lib-python/modified-2.7/test/test_extcall.pyc
+%%PYPYPREFIX%%/lib-python/modified-2.7/test/test_fcntl.py
+%%PYPYPREFIX%%/lib-python/modified-2.7/test/test_fcntl.pyc
 %%PYPYPREFIX%%/lib-python/modified-2.7/test/test_file.py
 %%PYPYPREFIX%%/lib-python/modified-2.7/test/test_file.pyc
 %%PYPYPREFIX%%/lib-python/modified-2.7/test/test_file2k.py
