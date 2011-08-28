@@ -5,16 +5,6 @@
 # $FreeBSD$
 #
 
-# TODO:
-# - check for sufficient memory
-# - add test target
-# - support -O1 (gc)
-# - support CLI backend (broken in 1.5)
-# - support valgrind
-# - use the first instance to compile object code
-# - make jitviewer port (depends flask pygments simplejson Jinja2 Werkzeug)
-# - switch to slow (with low mem usage) flags if memory an issue
-
 PORTNAME=	pypy
 DISTVERSION=	1.6
 CATEGORIES=	lang python
