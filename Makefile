@@ -21,6 +21,9 @@ LICENSE_COMB=	multi
 LIB_DEPENDS=	expat:${PORTSDIR}/textproc/expat2 \
 		ffi:${PORTSDIR}/devel/libffi
 
+OPTIONS=	STACKLESS "Translate a stackless capable pypy (no jit)" OFF \
+		SANDBOX "Translate a sandboxed pypy" OFF
+
 BUILD_WRKSRC=	${WRKDIR}
 USE_BZIP2=	yes
 USE_ICONV=	yes
@@ -34,8 +37,12 @@ PYPYPREFIX?=	${PREFIX}/${PORTNAME}-${DISTVERSION}
 PLIST_SUB+=	PYPYPREFIX="${PYPYPREFIX:S|^${PREFIX}/||g}" \
 		DISTVERSION="${DISTVERSION}"
 
+.include <${.CURDIR}/files/bsd.pypy.inst.mk>
+.include <bsd.port.options.mk>
+
 # List of PyPy instances
-PYPY_INST?=	DEFAULT
+.if !defined(PYPY_INST)
+PYPY_INST=	DEFAULT
 
 .if defined(WITH_STACKLESS)
 PYPY_INST+=	STACKLESS
@@ -44,10 +51,16 @@ PYPY_INST+=	STACKLESS
 .if defined(WITH_SANDBOX)
 PYPY_INST+=	SANDBOX
 .endif
+.endif
 
+PYPY_NAMES=
 .for inst in ${PYPY_INST}
+PYPY_NAMES+=	${PYPY_${inst}_NAME}
+.endfor
+
+.for name in ${PYPY_NAMES}
 .if !defined(PYPY_PRIMARY)
-PYPY_PRIMARY=	${PYPY_${inst}_NAME}
+PYPY_PRIMARY=	${name}
 .endif
 .endfor
 
@@ -63,15 +76,6 @@ USE_PYTHON_BUILD=	2.5+
 PY=		${PYTHON_CMD}
 .endif
 .endif
-
-.include <bsd.port.pre.mk>
-
-PYPY_NAMES=
-.for inst in ${PYPY_INST}
-PYPY_NAMES+=	${PYPY_${inst}_NAME}
-.endfor
-
-.include <${.CURDIR}/files/bsd.pypy.inst.mk>
 
 # Translate FreeBSD ARCH types to PyPy ARCH types
 # Pypy officially only supports i386 and amd64, the other platforms are
@@ -192,8 +196,8 @@ test: patch
 pkg-plist: build
 	${RM} -f ${WRKDIR}/.plist-files-gen ${WRKDIR}/.plist-dirs-gen
 .for dir in ${PYPYDIRS}
-	cd ${WRKSRC} && find ${dir} -type f >> ${WRKDIR}/.plist-files-gen
-	cd ${WRKSRC} && find ${dir} -type d >> ${WRKDIR}/.plist-dirs-gen
+	cd ${WRKSRC} && ${FIND} ${dir} -type f >> ${WRKDIR}/.plist-files-gen
+	cd ${WRKSRC} && ${FIND} ${dir} -type d >> ${WRKDIR}/.plist-dirs-gen
 .endfor
 .for file in LICENSE README
 	${ECHO} ${file} >> ${WRKDIR}/.plist-files-gen
@@ -206,4 +210,4 @@ pkg-plist: build
 	${SORT} -r ${WRKDIR}/.plist-dirs-gen >> ${WRKDIR}/pkg-plist
 	${CP} ${WRKDIR}/pkg-plist pkg-plist
 
-.include <bsd.port.post.mk>
+.include <bsd.port.mk>

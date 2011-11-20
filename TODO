@@ -8,4 +8,5 @@ TODO:
  - make jitviewer port (depends flask pygments simplejson Jinja2 Werkzeug)
  - switch to slow (with low mem usage) flags if memory an issue
  * add pkg-plist target
- - add config options (stackless and sandbox)
+ * add config options (stackless and sandbox)
+ - port test
