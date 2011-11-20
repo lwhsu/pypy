@@ -45,10 +45,16 @@ PYPY_INST+=	STACKLESS
 PYPY_INST+=	SANDBOX
 .endif
 
+.for inst in ${PYPY_INST}
+.if !defined(PYPY_PRIMARY)
+PYPY_PRIMARY=	${PYPY_${inst}_NAME}
+.endif
+.endfor
+
 # Use pypy if it is installed, else use python (to translate)
 .if !defined(PY)
 .if !defined(PYPY)
-PYPY!=		which pypy 2> /dev/null || true
+PYPY!=		which ${PYPY_PRIMARY} 2> /dev/null || true
 .endif
 .if exists(${PYPY})
 PY=		${PYPY}
@@ -153,12 +159,12 @@ do-configure:
 .endfor
 
 post-build:
-	-${FIND} ${PYPYDIRS:S|^|${WRKSRC}/|g} -type d | ${XARGS} ${WRKDIR}/build_pypy/usession-unknown-0/testing_1/pypy-c -m compileall -fl
+	-${FIND} ${PYPYDIRS:S|^|${WRKSRC}/|g} -type d | ${XARGS} ${WRKDIR}/build_${PYPY_PRIMARY}/usession-unknown-0/testing_1/pypy-c -m compileall -fl
 
 do-install:
 	${MKDIR} ${PYPYPREFIX} ${PYPYPREFIX}/bin
 .for dir in ${PYPYDIRS}
-	cd ${WRKSRC} && ${COPYTREE_SHARE} ${dir} ${PYPYPREFIX}
+# 	cd ${WRKSRC} && ${COPYTREE_SHARE} ${dir} ${PYPYPREFIX}
 .endfor
 .for file in LICENSE README
 	${INSTALL_DATA} ${WRKSRC}/${file} ${PYPYPREFIX}/${file}
