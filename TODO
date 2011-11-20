@@ -9,4 +9,4 @@ TODO:
  - switch to slow (with low mem usage) flags if memory an issue
  * add pkg-plist target
  * add config options (stackless and sandbox)
- - port test
+ * port test

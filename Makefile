@@ -168,7 +168,7 @@ post-build:
 do-install:
 	${MKDIR} ${PYPYPREFIX} ${PYPYPREFIX}/bin
 .for dir in ${PYPYDIRS}
-# 	cd ${WRKSRC} && ${COPYTREE_SHARE} ${dir} ${PYPYPREFIX}
+	cd ${WRKSRC} && ${COPYTREE_SHARE} ${dir} ${PYPYPREFIX}
 .endfor
 .for file in LICENSE README
 	${INSTALL_DATA} ${WRKSRC}/${file} ${PYPYPREFIX}/${file}
