@@ -55,13 +55,14 @@ PYPY_INST+=	SANDBOX
 
 PYPY_NAMES=
 .for inst in ${PYPY_INST}
-PYPY_NAMES+=	${PYPY_${inst}_NAME}
-.endfor
 
-.for name in ${PYPY_NAMES}
-.if !defined(PYPY_PRIMARY)
-PYPY_PRIMARY=	${name}
+PYPY_NAMES+=	${PYPY_${inst}_NAME}
+PYPY_PRIMARY?=	${PYPY_${inst}_NAME}
+
+.if ${PYPY_${inst}_OPT} == 0 || ${PYPY_${inst}_OPT} == 1 || ${PYPY_${inst}_OPT} == size
+WITH_BOEHM_GC=	yes
 .endif
+
 .endfor
 
 # Use pypy if it is installed, else use python (to translate)
@@ -75,6 +76,10 @@ PY=		${PYPY}
 USE_PYTHON_BUILD=	2.5+
 PY=		${PYTHON_CMD}
 .endif
+.endif
+
+.if defined(WITH_BOEHM_GC)
+LIB_DEPENDS+=	gc.1:${PORTSDIR}/devel/boehm-gc
 .endif
 
 # Translate FreeBSD ARCH types to PyPy ARCH types
