@@ -46,14 +46,16 @@ PYPY_INST+=	SANDBOX
 .endif
 
 # Use pypy if it is installed, else use python (to translate)
+.if !defined(PY)
 .if !defined(PYPY)
 PYPY!=		which pypy 2> /dev/null || true
 .endif
 .if exists(${PYPY})
-PY?=		${PYPY}
+PY=		${PYPY}
 .else
 USE_PYTHON_BUILD=	2.5+
-PY?=		${PYTHON_CMD}
+PY=		${PYTHON_CMD}
+.endif
 .endif
 
 .include <bsd.port.pre.mk>
@@ -69,15 +71,15 @@ PYPY_NAMES+=	${PYPY_${inst}_NAME}
 # Pypy officially only supports i386 and amd64, the other platforms are
 # untested (and do not have jit support).
 .if ${ARCH} == "i386"
-PYPY_ARCH=	"x86_32"
+PYPY_ARCH=	x86_32
 PYPY_JITTABLE=	YES
 .elif ${ARCH} == "amd64"
-PYPY_ARCH=	"x86_64"
+PYPY_ARCH=	x86_64
 PYPY_JITTABLE=	YES
 .elif ${ARCH} == "powerpc"
-PYPY_ARCH=	"ppc_32"
+PYPY_ARCH=	ppc_32
 .elif ${ARCH} == "powerpc64"
-PYPY_ARCH=	"ppc_64"
+PYPY_ARCH=	ppc_64
 .else
 PYPY_ARCH=	${ARCH}
 .endif
@@ -150,6 +152,9 @@ do-configure:
 	${ECHO} >> ${WRKDIR}/Makefile
 .endfor
 
+post-build:
+	-${FIND} ${PYPYDIRS:S|^|${WRKSRC}/|g} -type d | ${XARGS} ${WRKDIR}/build_pypy/usession-unknown-0/testing_1/pypy-c -m compileall -fl
+
 do-install:
 	${MKDIR} ${PYPYPREFIX} ${PYPYPREFIX}/bin
 .for dir in ${PYPYDIRS}
@@ -168,7 +173,6 @@ do-install:
 .endfor
 	${CAT} ${TMPPLIST} >> ${TMPPLIST}.prefix
 	${MV} ${TMPPLIST}.prefix ${TMPPLIST}
-	-${FIND} ${PYPYPREFIX} -type d | ${XARGS} ${PYPYPREFIX}/bin/pypy -m compileall -fl
 
 post-install:
 	${SH} ${PKGINSTALL} ${PKGNAME} POST-INSTALL
@@ -178,5 +182,22 @@ test: patch
 	@${WHICH} ${PYPY_${inst}_NAME} > /dev/null 2>&1 || (${ECHO} "Unable to find ${PYPY_${inst}_NAME}, please install port first!"; exit 1)
 	(${CD} ${WRKSRC}/lib-python; ${PYPY_${inst}_NAME} ../pypy/test_all.py)
 .endfor
+
+pkg-plist: build
+	${RM} -f ${WRKDIR}/.plist-files-gen ${WRKDIR}/.plist-dirs-gen
+.for dir in ${PYPYDIRS}
+	cd ${WRKSRC} && find ${dir} -type f >> ${WRKDIR}/.plist-files-gen
+	cd ${WRKSRC} && find ${dir} -type d >> ${WRKDIR}/.plist-dirs-gen
+.endfor
+.for file in LICENSE README
+	${ECHO} ${file} >> ${WRKDIR}/.plist-files-gen
+.endfor
+	${ECHO} 'bin' >> ${WRKDIR}/.plist-dirs-gen
+	${REINPLACE_CMD} -e 's|^|%%PYPYPREFIX%%/|g' -e 's|${PYPY_ARCH}|%%PYPY_ARCH%%|g' ${WRKDIR}/.plist-files-gen
+	${REINPLACE_CMD} -e 's|^|@dirrm %%PYPYPREFIX%%/|g' ${WRKDIR}/.plist-dirs-gen
+	${ECHO} '@dirrm %%PYPYPREFIX%%' >> ${WRKDIR}/.plist-dirs-gen
+	${SORT} ${WRKDIR}/.plist-files-gen > ${WRKDIR}/pkg-plist
+	${SORT} -r ${WRKDIR}/.plist-dirs-gen >> ${WRKDIR}/pkg-plist
+	${CP} ${WRKDIR}/pkg-plist pkg-plist
 
 .include <bsd.port.post.mk>
