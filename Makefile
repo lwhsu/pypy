@@ -21,8 +21,7 @@ LICENSE_COMB=	multi
 LIB_DEPENDS=	expat:${PORTSDIR}/textproc/expat2 \
 		ffi:${PORTSDIR}/devel/libffi
 
-OPTIONS=	STACKLESS "Translate a stackless capable pypy (no jit)" OFF \
-		SANDBOX "Translate a sandboxed pypy" OFF
+OPTIONS=	SANDBOX "Translate a sandboxed pypy" OFF
 
 BUILD_WRKSRC=	${WRKDIR}
 USE_BZIP2=	yes
@@ -43,10 +42,6 @@ PLIST_SUB+=	PYPYPREFIX="${PYPYPREFIX:S|^${PREFIX}/||g}" \
 # List of PyPy instances
 .if !defined(PYPY_INST)
 PYPY_INST=	DEFAULT
-
-.if defined(WITH_STACKLESS)
-PYPY_INST+=	STACKLESS
-.endif
 
 .if defined(WITH_SANDBOX)
 PYPY_INST+=	SANDBOX

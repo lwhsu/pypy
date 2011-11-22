@@ -7,11 +7,6 @@ PYPY_DEFAULT_TRANSLATE_ARGS?=	--gcrootfinder=shadowstack --thread
 PYPY_DEFAULT_OPT?=		jit
 PYPY_DEFAULT_OBJSPACE_ARGS?=
 
-PYPY_STACKLESS_NAME?=		pypy-stackless
-PYPY_STACKLESS_TRANSLATE_ARGS?=	--gcrootfinder=shadowstack --stackless
-PYPY_STACKLESS_OPT?=		2
-PYPY_STACKLESS_OBJSPACE_ARGS?=
-
 PYPY_SANDBOX_NAME?=		pypy-sandbox
 PYPY_SANDBOX_TRANSLATE_ARGS?=	--gcrootfinder=shadowstack --sandbox
 PYPY_SANDBOX_OPT?=		jit

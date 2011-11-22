@@ -6,7 +6,7 @@ TODO:
  - support valgrind
  * use the first instance to compile object code
  - make jitviewer port (depends flask pygments simplejson Jinja2 Werkzeug)
- - switch to slow (with low mem usage) flags if memory an issue
  * add pkg-plist target
  * add config options (stackless and sandbox)
  * port test
+ - fix detection of expat.h
