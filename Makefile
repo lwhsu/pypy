@@ -163,7 +163,7 @@ do-configure:
 .endfor
 
 post-build:
-	-${FIND} ${PYPYDIRS:S|^|${WRKSRC}/|g} -type d | ${XARGS} ${WRKDIR}/build_${PYPY_PRIMARY}/usession-unknown-0/testing_1/pypy-c -m compileall -fl
+	-${FIND} ${PYPYDIRS:S|^|${WRKSRC}/|g} -type d | ${SETENV} PYTHON_PATH=${WRKSRC} ${XARGS} ${WRKDIR}/${PYPY_PRIMARY} -m compileall -fl
 
 do-install:
 	${MKDIR} ${PYPYPREFIX} ${PYPYPREFIX}/bin
