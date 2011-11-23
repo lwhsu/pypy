@@ -36,6 +36,8 @@ PYPYPREFIX?=	${PREFIX}/${PORTNAME}-${DISTVERSION}
 PLIST_SUB+=	PYPYPREFIX="${PYPYPREFIX:S|^${PREFIX}/||g}" \
 		DISTVERSION="${DISTVERSION}"
 
+MAKE_ENV+=	PYPY_LOCALBASE=${LOCALBASE}
+
 .include <${.CURDIR}/files/bsd.pypy.inst.mk>
 .include <bsd.port.options.mk>
 
