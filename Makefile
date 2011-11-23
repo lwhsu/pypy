@@ -210,6 +210,6 @@ pkg-plist: build
 	${ECHO} '@dirrm %%PYPYPREFIX%%' >> ${WRKDIR}/.plist-dirs-gen
 	${SORT} ${WRKDIR}/.plist-files-gen > ${WRKDIR}/pkg-plist
 	${SORT} -r ${WRKDIR}/.plist-dirs-gen >> ${WRKDIR}/pkg-plist
-	${CP} ${WRKDIR}/pkg-plist pkg-plist
+	${CP} ${WRKDIR}/pkg-plist ${.CURDIR}/pkg-plist
 
 .include <bsd.port.mk>

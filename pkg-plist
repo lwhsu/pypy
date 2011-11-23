@@ -3850,6 +3850,10 @@
 %%PYPYPREFIX%%/lib-python/modified-2.7/email/test/test_email_torture.pyc
 %%PYPYPREFIX%%/lib-python/modified-2.7/email/utils.py
 %%PYPYPREFIX%%/lib-python/modified-2.7/email/utils.pyc
+%%PYPYPREFIX%%/lib-python/modified-2.7/heapq.py
+%%PYPYPREFIX%%/lib-python/modified-2.7/heapq.pyc
+%%PYPYPREFIX%%/lib-python/modified-2.7/httplib.py
+%%PYPYPREFIX%%/lib-python/modified-2.7/httplib.pyc
 %%PYPYPREFIX%%/lib-python/modified-2.7/idlelib/AutoComplete.py
 %%PYPYPREFIX%%/lib-python/modified-2.7/idlelib/AutoComplete.pyc
 %%PYPYPREFIX%%/lib-python/modified-2.7/idlelib/AutoCompleteWindow.py
@@ -4261,6 +4265,8 @@
 %%PYPYPREFIX%%/lib-python/modified-2.7/opcode.pyc
 %%PYPYPREFIX%%/lib-python/modified-2.7/pickle.py
 %%PYPYPREFIX%%/lib-python/modified-2.7/pickle.pyc
+%%PYPYPREFIX%%/lib-python/modified-2.7/pkgutil.py
+%%PYPYPREFIX%%/lib-python/modified-2.7/pkgutil.pyc
 %%PYPYPREFIX%%/lib-python/modified-2.7/pprint.py
 %%PYPYPREFIX%%/lib-python/modified-2.7/pprint.pyc
 %%PYPYPREFIX%%/lib-python/modified-2.7/pydoc.py
@@ -4465,6 +4471,8 @@
 %%PYPYPREFIX%%/lib-python/modified-2.7/test/test_ssl.pyc
 %%PYPYPREFIX%%/lib-python/modified-2.7/test/test_struct.py
 %%PYPYPREFIX%%/lib-python/modified-2.7/test/test_struct.pyc
+%%PYPYPREFIX%%/lib-python/modified-2.7/test/test_subprocess.py
+%%PYPYPREFIX%%/lib-python/modified-2.7/test/test_subprocess.pyc
 %%PYPYPREFIX%%/lib-python/modified-2.7/test/test_support.py
 %%PYPYPREFIX%%/lib-python/modified-2.7/test/test_support.pyc
 %%PYPYPREFIX%%/lib-python/modified-2.7/test/test_syntax.py
@@ -4517,6 +4525,8 @@
 %%PYPYPREFIX%%/lib-python/modified-2.7/test/tf_inherit_check.pyc
 %%PYPYPREFIX%%/lib-python/modified-2.7/trace.py
 %%PYPYPREFIX%%/lib-python/modified-2.7/trace.pyc
+%%PYPYPREFIX%%/lib-python/modified-2.7/urllib2.py
+%%PYPYPREFIX%%/lib-python/modified-2.7/urllib2.pyc
 %%PYPYPREFIX%%/lib-python/modified-2.7/uuid.py
 %%PYPYPREFIX%%/lib-python/modified-2.7/uuid.pyc
 %%PYPYPREFIX%%/lib-python/stdlib-version.txt
@@ -4567,6 +4577,8 @@
 %%PYPYPREFIX%%/lib_pypy/_ctypes_test.c
 %%PYPYPREFIX%%/lib_pypy/_ctypes_test.py
 %%PYPYPREFIX%%/lib_pypy/_ctypes_test.pyc
+%%PYPYPREFIX%%/lib_pypy/_elementtree.py
+%%PYPYPREFIX%%/lib_pypy/_elementtree.pyc
 %%PYPYPREFIX%%/lib_pypy/_functools.py
 %%PYPYPREFIX%%/lib_pypy/_functools.pyc
 %%PYPYPREFIX%%/lib_pypy/_locale.py
@@ -4618,6 +4630,10 @@
 %%PYPYPREFIX%%/lib_pypy/ctypes_config_cache/_locale_%%PYPY_ARCH%%_.pyc
 %%PYPYPREFIX%%/lib_pypy/ctypes_config_cache/_locale_cache.py
 %%PYPYPREFIX%%/lib_pypy/ctypes_config_cache/_locale_cache.pyc
+%%PYPYPREFIX%%/lib_pypy/ctypes_config_cache/_pyexpat_%%PYPY_ARCH%%_.py
+%%PYPYPREFIX%%/lib_pypy/ctypes_config_cache/_pyexpat_%%PYPY_ARCH%%_.pyc
+%%PYPYPREFIX%%/lib_pypy/ctypes_config_cache/_pyexpat_cache.py
+%%PYPYPREFIX%%/lib_pypy/ctypes_config_cache/_pyexpat_cache.pyc
 %%PYPYPREFIX%%/lib_pypy/ctypes_config_cache/_resource_%%PYPY_ARCH%%_.py
 %%PYPYPREFIX%%/lib_pypy/ctypes_config_cache/_resource_%%PYPY_ARCH%%_.pyc
 %%PYPYPREFIX%%/lib_pypy/ctypes_config_cache/_resource_cache.py
