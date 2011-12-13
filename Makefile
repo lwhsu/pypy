@@ -65,7 +65,7 @@ WITH_BOEHM_GC=	yes
 # Use pypy if it is installed, else use python (to translate)
 .if !defined(PY)
 .if !defined(PYPY)
-PYPY!=		which ${PYPY_PRIMARY} 2> /dev/null || true
+PYPY!=		${WHICH} ${PYPY_PRIMARY} 2> /dev/null || true
 .endif
 .if exists(${PYPY})
 PY=		${PYPY}
