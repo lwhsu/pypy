@@ -1,13 +1,11 @@
 TODO:
- - check for sufficient memory
- * add test target
- * support -O0 -O1 -Osize (gc)
- - support CLI backend (broken in 1.5)
- - support JVM backend
- - support valgrind
- * use the first instance to compile object code
- - make jitviewer port (depends flask pygments simplejson Jinja2 Werkzeug)
- * add pkg-plist target
- * add config options (stackless and sandbox)
- * port test
- * fix detection of expat.h
+ * check for sufficient memory
+ * support CLI backend (broken in 1.5-1.7)
+ * support JVM backend (untested)
+ * support valgrind
+ * make jitviewer port (depends flask pygments simplejson Jinja2 Werkzeug)
+
+Pypy deficiencies under FreeBSD:
+ * boehm GC does not work (possibly FreeBSD specific)
+ * --gcrootfinder=asmgcc does not work (currently only works under Linux)
+ * CLI backend (all platforms)
