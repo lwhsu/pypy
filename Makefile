@@ -29,7 +29,7 @@ USE_ICONV=	yes
 USE_GETTEXT=	yes
 PKGINSTALL=	${WRKDIR}/pkg-install
 PKGDEINSTALL=	${WRKDIR}/pkg-deinstall
-WRKSRC=		${WRKDIR}/pypy-pypy-release-${DISTVERSION}
+WRKSRC=		${WRKDIR}/pypy-pypy-2346207d9946
 
 PYPYDIRS=	include lib-python lib_pypy site-packages
 PYPYPREFIX?=	${PREFIX}/${PORTNAME}-${DISTVERSION}
