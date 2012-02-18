@@ -176,8 +176,8 @@ do-install:
 .for dir in ${PYPYDIRS}
 	cd ${WRKSRC} && ${COPYTREE_SHARE} ${dir} ${PYPYPREFIX}
 .endfor
-.for file in LICENSE README
-	${INSTALL_DATA} ${WRKSRC}/${file} ${PYPYPREFIX}/${file}
+.for f in LICENSE README
+	${INSTALL_DATA} ${WRKSRC}/${f} ${PYPYPREFIX}/${f}
 .endfor
 .for name in ${PYPY_NAMES:O}
 	${INSTALL_PROGRAM} ${WRKDIR}/${name} ${PYPYPREFIX}/bin/${name}
@@ -205,8 +205,8 @@ pkg-plist: build
 	cd ${WRKSRC} && ${FIND} ${dir} -type f >> ${WRKDIR}/.plist-files-gen
 	cd ${WRKSRC} && ${FIND} ${dir} -type d >> ${WRKDIR}/.plist-dirs-gen
 .endfor
-.for file in LICENSE README
-	${ECHO} ${file} >> ${WRKDIR}/.plist-files-gen
+.for f in LICENSE README
+	${ECHO} ${f} >> ${WRKDIR}/.plist-files-gen
 .endfor
 	${ECHO} 'bin' >> ${WRKDIR}/.plist-dirs-gen
 	${REINPLACE_CMD} -e 's|^|%%PYPYPREFIX%%/|g' -e 's|${PYPY_ARCH}|%%PYPY_ARCH%%|g' ${WRKDIR}/.plist-files-gen
