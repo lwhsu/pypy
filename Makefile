@@ -2,7 +2,7 @@
 # Date created:				2011/05/17
 # Whom:					David Naylor <naylor.b.david@gmail.com>
 #
-# $FreeBSD$
+# $FreeBSD: ports/lang/pypy/Makefile,v 1.1 2011/12/13 15:37:36 lwhsu Exp $
 #
 
 PORTNAME=	pypy
