@@ -140,6 +140,9 @@ pre-fetch:
 	@${ECHO} "however an average machine takes in excess of 4 hours, per instance."
 	@sleep 1
 
+post-patch:
+	@${RM} -f ${WRKSRC}/lib-python/2.7/SimpleXMLRPCServer.py.orig
+
 do-configure:
 	${SED} -e 's|%%PREFIX%%|${PREFIX}|g' \
 		-e 's|%%PYPYPREFIX%%|${PYPYPREFIX}|g' \
